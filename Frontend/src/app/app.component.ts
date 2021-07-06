@@ -21,4 +21,8 @@ export class AppComponent implements OnInit{
   ngOnInit(): void {
     
   }
+
+  toggleTodo(id: number){
+    this.messageService.toggleTodo(id);
+  }
 }

@@ -35,34 +35,26 @@ public class WebSocketController {
     @CrossOrigin(origins = "http://localhost:4200")
     @MessageMapping("/send/message")
     public void sendMessage(String msg){
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-//            Todo todo = objectMapper.readValue(msg, Todo.class);
-            log.info("sendMessage: {}", msg);
-            Todo _todo = new Todo();
-            _todo.setTitle(msg);
-            this.todoRepository.saveAndFlush(_todo);
-//        เพื่อตามไม่ทันเพื่อน
-            this.todoList.add(_todo);
-            this.template.convertAndSend("/message",  _todo);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        log.info("sendMessage: {}", msg);
+        // create new TodoObject.
+        Todo _todo = new Todo();
+        _todo.setTitle(msg);
+        this.todoRepository.saveAndFlush(_todo);
+        this.todoList.add(_todo); // update todoList.
+        this.template.convertAndSend("/message",  _todo);
     }
 
-    @GetMapping("/get/message")
-    public ResponseEntity<List<Todo>> getMessage(){
+    @CrossOrigin(origins = "http://localhost:4200")
+    @GetMapping("/get/todos")
+    public ResponseEntity<List<Todo>> getAllTodos(){
         log.info("getMessage");
-//        System.out.println(message);
-//        this.template.getMessageConverter().toString();
-//        this.template.convertAndSend("/message",  message);
         return ResponseEntity.ok().body(this.todoList);
     }
 
     public void toggleCompleted(Todo todo){
-        this.template.convertAndSend("/message",  todo);
-        this.todoList.forEach(t -> {
-            if(t.getId() == todo.getId()){
+        this.template.convertAndSend("/message",  todo); // for frontend.
+        this.todoList.forEach(t -> { // for update todoList.
+            if(t.getId().equals(todo.getId())){
                 t.setCompleted(todo.isCompleted());
             }
         });

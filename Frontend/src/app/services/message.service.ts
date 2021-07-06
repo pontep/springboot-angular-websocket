@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from 'src/environments/environment';
 // Declare SockJS and Stomp
 declare var SockJS: any;
 declare var Stomp: any;
@@ -8,6 +9,8 @@ declare var Stomp: any;
 })
 export class MessageService {
   
+  serverUrl = environment.serverUrl;
+
   constructor(private http: HttpClient) {
     this.initializeWebSocketConnection();
     this.getMessages();
@@ -15,7 +18,7 @@ export class MessageService {
   public stompClient: any;
   public todos: any[] = [];
   initializeWebSocketConnection() {
-    const serverUrl = 'http://localhost:9000/socket';
+    const serverUrl = this.serverUrl + '/socket';
     const ws = new SockJS(serverUrl);
     this.stompClient = Stomp.over(ws);
     const that = this;
@@ -40,22 +43,23 @@ export class MessageService {
   }
   
   sendMessage(title: string) {
-    // let todo: Todo = {
-    //   id: null,
-    //   title: title,
-    //   isCompleted: false
-    // }
-    // console.log(`todo =`, todo);
-    // let str = JSON.stringify(todo);
     this.stompClient.send('/app/send/message' , {}, title);
   }
 
   getMessages(){
     console.log(`init getMessages`);
     
-    this.http.get<any[]>('http://localhost:9000/get/message').subscribe(todoList => {
+    this.http.get<any[]>(this.serverUrl + '/get/todos').subscribe(todoList => {
       console.log(todoList);
       this.todos = todoList;
+    })
+  }
+
+  toggleTodo(id: number){
+    console.log(`toggleTodo ${id}`);
+    
+    this.http.post<any[]>(`${this.serverUrl}/todo?id=${id}`, {}).subscribe(res => {
+      console.log(res);
     })
   }
 }

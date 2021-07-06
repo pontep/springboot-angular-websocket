@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class TodoController {
 
@@ -15,7 +16,7 @@ public class TodoController {
     @Autowired
     private WebSocketController webSocketController;
 
-    @PostMapping("/todo/{id}")
+    @PostMapping("/todo")
     public ResponseEntity<?> toggleCompletedTodo(@RequestParam("id") Long id){
         Todo todo = todoRepository.findById(id).orElseThrow(() -> new RuntimeException("Id is not exists."));
         todo.setCompleted(!todo.isCompleted());

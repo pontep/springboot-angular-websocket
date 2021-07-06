@@ -2,8 +2,15 @@
   <input class="form-control" type="text" placeholder="message" [(ngModel)]="input">
   <button class="btn btn-success" (click)="sendMessage()">Send</button>
   <div class="content">
-    <div *ngFor="let msg of messageService.todos" [style]="msg.completed ? 'color: red;' : ''">
-      {{msg.title}}
+    <div *ngFor="let msg of messageService.todos">
+     
+      <div *ngIf="msg.completed">
+        <s>{{msg.title}}</s>
+      </div>
+      <div *ngIf="!msg.completed">
+        {{msg.title}}
+      </div>
+      <button (click)="toggleTodo(msg.id)">ToggleTodo</button>
     </div>
   </div>
 </div>
