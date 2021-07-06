@@ -33,7 +33,10 @@
             "styles": [
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "src/assets/stomp.min.js",
+              "src/assets/sockjs.min.js"
+            ]
           },
           "configurations": {
             "production": {
